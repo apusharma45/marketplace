@@ -8,7 +8,6 @@ import com.software.marketplace.repository.RoleRepository;
 import com.software.marketplace.repository.UserRepository;
 import com.software.marketplace.service.RegistrationService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.crypto.factory.PasswordEncoderFactories;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,11 +19,9 @@ import java.util.Set;
 @RequiredArgsConstructor
 public class RegistrationServiceImpl implements RegistrationService {
 
-    private static final PasswordEncoder PASSWORD_ENCODER =
-            PasswordEncoderFactories.createDelegatingPasswordEncoder();
-
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final PasswordEncoder passwordEncoder;
 
     @Override
     @Transactional
@@ -51,7 +48,7 @@ public class RegistrationServiceImpl implements RegistrationService {
         User user = User.builder()
                 .name(request.getUsername().trim())
                 .email(request.getEmail().trim().toLowerCase())
-                .password(PASSWORD_ENCODER.encode(request.getPassword()))
+                .password(passwordEncoder.encode(request.getPassword()))
                 .enabled(true)
                 .roles(roles)
                 .build();
