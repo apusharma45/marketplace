@@ -12,6 +12,7 @@ import org.mockito.ArgumentCaptor;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 
 import java.util.Optional;
 
@@ -31,6 +32,9 @@ class RegistrationServiceImplTest {
     @Mock
     private RoleRepository roleRepository;
 
+    @Mock
+    private PasswordEncoder passwordEncoder;
+
     @InjectMocks
     private RegistrationServiceImpl registrationService;
 
@@ -45,6 +49,7 @@ class RegistrationServiceImplTest {
 
         when(userRepository.existsByName("  Alice  ")).thenReturn(false);
         when(userRepository.existsByEmail("ALICE@EXAMPLE.COM ")).thenReturn(false);
+        when(passwordEncoder.encode("plain-password")).thenReturn("$2a$10$hashedPasswordValue");
         when(roleRepository.findByName(RoleType.ROLE_BUYER.name()))
                 .thenReturn(Optional.of(Role.builder().id(1L).name(RoleType.ROLE_BUYER.name()).build()));
 
@@ -58,7 +63,7 @@ class RegistrationServiceImplTest {
         assertThat(savedUser.getEmail()).isEqualTo("alice@example.com");
         assertThat(savedUser.isEnabled()).isTrue();
         assertThat(savedUser.getPassword()).isNotEqualTo("plain-password");
-        assertThat(savedUser.getPassword()).startsWith("{");
+        assertThat(savedUser.getPassword()).startsWith("$2");
         assertThat(savedUser.getRoles()).extracting(Role::getName)
                 .containsExactly(RoleType.ROLE_BUYER.name());
     }
