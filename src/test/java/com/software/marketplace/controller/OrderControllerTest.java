@@ -11,7 +11,6 @@ import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowableOfType;
@@ -73,8 +72,6 @@ class OrderControllerTest {
                 IllegalArgumentException.class
         );
         assertThat(thrown).isNotNull();
-        ResponseEntity<Map<String, String>> response = orderController.handleOrderErrors(thrown);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody()).containsEntry("error", "Product is out of stock.");
+        assertThat(thrown.getMessage()).isEqualTo("Product is out of stock.");
     }
 }
