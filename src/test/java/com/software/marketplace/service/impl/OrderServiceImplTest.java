@@ -146,4 +146,19 @@ class OrderServiceImplTest {
         assertThat(response.get(0).getId()).isEqualTo(100L);
         assertThat(response.get(0).getProductId()).isEqualTo(10L);
     }
+
+    @Test
+    void placeOrderForBuyerThrowsWhenUserIsNotBuyerRole() {
+        User sellerRoleUser = User.builder()
+                .id(5L)
+                .name("seller-like")
+                .roles(Set.of(Role.builder().name("ROLE_SELLER").build()))
+                .build();
+
+        when(userRepository.findById(5L)).thenReturn(Optional.of(sellerRoleUser));
+
+        assertThatThrownBy(() -> orderService.placeOrderForBuyer(5L, OrderCreateRequestDto.builder().productId(1L).build()))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Buyer not found or invalid role.");
+    }
 }

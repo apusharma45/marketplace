@@ -101,4 +101,41 @@ class RegistrationServiceImplTest {
         verify(userRepository).existsByName("admin");
         verify(userRepository).existsByEmail("admin@example.com");
     }
+
+    @Test
+    void registerUserThrowsWhenEmailAlreadyExists() {
+        UserRegistrationRequestDto request = UserRegistrationRequestDto.builder()
+                .username("new-user")
+                .email("existing@example.com")
+                .password("plain-password")
+                .roleType(RoleType.ROLE_BUYER)
+                .build();
+
+        when(userRepository.existsByName("new-user")).thenReturn(false);
+        when(userRepository.existsByEmail("existing@example.com")).thenReturn(true);
+
+        assertThatThrownBy(() -> registrationService.registerUser(request))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Email is already registered.");
+
+        verifyNoInteractions(roleRepository);
+    }
+
+    @Test
+    void registerUserThrowsWhenSelectedRoleMissingInDatabase() {
+        UserRegistrationRequestDto request = UserRegistrationRequestDto.builder()
+                .username("buyer-user")
+                .email("buyer@example.com")
+                .password("plain-password")
+                .roleType(RoleType.ROLE_BUYER)
+                .build();
+
+        when(userRepository.existsByName("buyer-user")).thenReturn(false);
+        when(userRepository.existsByEmail("buyer@example.com")).thenReturn(false);
+        when(roleRepository.findByName(RoleType.ROLE_BUYER.name())).thenReturn(Optional.empty());
+
+        assertThatThrownBy(() -> registrationService.registerUser(request))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Selected role does not exist in the database.");
+    }
 }

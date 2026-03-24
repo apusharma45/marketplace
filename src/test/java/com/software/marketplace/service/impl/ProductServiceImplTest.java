@@ -105,4 +105,46 @@ class ProductServiceImplTest {
                 .isInstanceOf(IllegalArgumentException.class)
                 .hasMessage("User does not have SELLER role.");
     }
+
+    @Test
+    void getAvailableProductByIdThrowsWhenProductIsUnavailable() {
+        Product unavailable = Product.builder()
+                .id(12L)
+                .name("Unavailable")
+                .stock(0)
+                .build();
+        when(productRepository.findById(12L)).thenReturn(Optional.of(unavailable));
+
+        assertThatThrownBy(() -> productService.getAvailableProductById(12L))
+                .isInstanceOf(IllegalArgumentException.class)
+                .hasMessage("Product not found or unavailable.");
+    }
+
+    @Test
+    void updateProductForSellerSetsStockZeroWhenActiveIsFalse() {
+        User seller = User.builder().id(3L).name("seller1").build();
+        Product product = Product.builder()
+                .id(20L)
+                .name("Old Name")
+                .price(new BigDecimal("100"))
+                .stock(5)
+                .seller(seller)
+                .build();
+        ProductUpsertRequestDto request = ProductUpsertRequestDto.builder()
+                .name("New Name")
+                .description("updated")
+                .price(new BigDecimal("120"))
+                .stockQuantity(9)
+                .active(false)
+                .build();
+
+        when(productRepository.findById(20L)).thenReturn(Optional.of(product));
+        when(productRepository.save(any(Product.class))).thenAnswer(invocation -> invocation.getArgument(0));
+
+        ProductResponseDto response = productService.updateProductForSeller(20L, 3L, request);
+
+        assertThat(product.getStock()).isZero();
+        assertThat(response.getStockQuantity()).isZero();
+        assertThat(response.getActive()).isFalse();
+    }
 }
