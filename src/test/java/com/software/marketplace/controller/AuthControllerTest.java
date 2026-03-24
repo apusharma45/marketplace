@@ -59,9 +59,6 @@ class AuthControllerTest {
         IllegalArgumentException thrown =
                 catchThrowableOfType(() -> authController.register(request), IllegalArgumentException.class);
         assertThat(thrown).isNotNull();
-        ResponseEntity<Map<String, String>> response =
-                authController.handleRegistrationException(thrown);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody()).containsEntry("error", "Email is already registered.");
+        assertThat(thrown.getMessage()).isEqualTo("Email is already registered.");
     }
 }

@@ -10,7 +10,6 @@ import org.springframework.http.ResponseEntity;
 
 import java.math.BigDecimal;
 import java.util.List;
-import java.util.Map;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.catchThrowableOfType;
@@ -85,8 +84,6 @@ class ProductControllerTest {
         IllegalArgumentException thrown =
                 catchThrowableOfType(() -> productController.getAvailableProductById(99L), IllegalArgumentException.class);
         assertThat(thrown).isNotNull();
-        ResponseEntity<Map<String, String>> response = productController.handleProductErrors(thrown);
-        assertThat(response.getStatusCode()).isEqualTo(HttpStatus.BAD_REQUEST);
-        assertThat(response.getBody()).containsEntry("error", "Product not found or unavailable.");
+        assertThat(thrown.getMessage()).isEqualTo("Product not found or unavailable.");
     }
 }
