@@ -44,6 +44,12 @@
 
             <div class="form-actions">
                 <a class="btn btn-secondary" th:href="@{/buyer/products}">Back to products</a>
+                <form th:action="@{/buyer/cart/add}" method="post" class="logout-form">
+                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                    <input type="hidden" name="productId" th:value="${product.id}">
+                    <input type="hidden" name="quantity" value="1">
+                    <button class="btn btn-secondary" type="submit">Add to cart</button>
+                </form>
                 <a class="btn btn-primary" th:href="@{/buyer/orders/create/{id}(id=${product.id})}">Place order</a>
             </div>
         </section>

@@ -155,6 +155,16 @@ public class SellerPageController {
         return "seller/orders/list";
     }
 
+    @PostMapping("/seller/orders/{orderId}/ship")
+    public String markOrderAsShipped(@PathVariable("orderId") Long orderId, Authentication authentication) {
+        try {
+            orderService.markOrderAsShippedForSeller(orderId, getCurrentUserId(authentication));
+            return "redirect:/seller/orders?shipped";
+        } catch (IllegalArgumentException ex) {
+            return "redirect:/seller/orders?shipFailed";
+        }
+    }
+
     private Long getCurrentUserId(Authentication authentication) {
         String login = authentication.getName();
         User user = userRepository.findByName(login)

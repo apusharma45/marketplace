@@ -27,6 +27,7 @@ public class Order {
     private LocalDateTime createdAt = LocalDateTime.now();
 
     private String status;
+    private String paymentMethod;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> items;

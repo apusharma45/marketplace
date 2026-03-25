@@ -58,6 +58,10 @@
                sec:authorize="hasRole('BUYER')"
                th:classappend="${activeSection == 'buyer-orders'} ? ' active'"
                th:href="@{/buyer/orders}">My Orders</a>
+            <a class="nav-link"
+               sec:authorize="hasRole('BUYER')"
+               th:classappend="${activeSection == 'buyer-cart'} ? ' active'"
+               th:href="@{/buyer/cart}">Cart</a>
 
             <a class="nav-link"
                sec:authorize="!isAuthenticated()"
