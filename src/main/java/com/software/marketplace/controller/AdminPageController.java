@@ -3,6 +3,7 @@ package com.software.marketplace.controller;
 import com.software.marketplace.dto.order.OrderResponseDto;
 import com.software.marketplace.dto.product.ProductResponseDto;
 import com.software.marketplace.dto.user.UserResponseDto;
+import com.software.marketplace.entity.enums.OrderStatus;
 import com.software.marketplace.service.OrderService;
 import com.software.marketplace.service.ProductService;
 import com.software.marketplace.service.UserService;
@@ -10,6 +11,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.math.BigDecimal;
 import java.util.Comparator;
@@ -84,6 +88,37 @@ public class AdminPageController {
     @GetMapping("/admin/orders")
     public String adminOrders(Model model) {
         model.addAttribute("orders", orderService.getAllOrders());
+        model.addAttribute("allStatuses", OrderStatus.values());
         return "admin/orders/list";
+    }
+
+    @PostMapping("/admin/users/{userId}/status")
+    public String updateUserStatus(@PathVariable("userId") Long userId, @RequestParam("enabled") boolean enabled) {
+        try {
+            userService.setUserEnabledByAdmin(userId, enabled);
+            return "redirect:/admin/users?updated";
+        } catch (IllegalArgumentException ex) {
+            return "redirect:/admin/users?failed";
+        }
+    }
+
+    @PostMapping("/admin/products/{productId}/delete")
+    public String deleteProduct(@PathVariable("productId") Long productId) {
+        try {
+            productService.deleteProductForAdmin(productId);
+            return "redirect:/admin/products?deleted";
+        } catch (IllegalArgumentException ex) {
+            return "redirect:/admin/products?failed";
+        }
+    }
+
+    @PostMapping("/admin/orders/{orderId}/status")
+    public String updateOrderStatus(@PathVariable("orderId") Long orderId, @RequestParam("status") OrderStatus status) {
+        try {
+            orderService.updateOrderStatusByAdmin(orderId, status);
+            return "redirect:/admin/orders?updated";
+        } catch (IllegalArgumentException ex) {
+            return "redirect:/admin/orders?failed";
+        }
     }
 }

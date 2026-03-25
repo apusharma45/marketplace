@@ -2,6 +2,7 @@ package com.software.marketplace.service;
 
 import com.software.marketplace.dto.order.OrderCreateRequestDto;
 import com.software.marketplace.dto.order.OrderResponseDto;
+import com.software.marketplace.entity.enums.OrderStatus;
 
 import java.util.List;
 
@@ -18,4 +19,6 @@ public interface OrderService {
     List<OrderResponseDto> getAllOrders();
 
     void markOrderAsShippedForSeller(Long orderId, Long sellerId);
+
+    void updateOrderStatusByAdmin(Long orderId, OrderStatus status);
 }

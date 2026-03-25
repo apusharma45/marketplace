@@ -165,6 +165,19 @@ public class OrderServiceImpl implements OrderService {
         orderRepository.save(order);
     }
 
+    @Override
+    @Transactional
+    public void updateOrderStatusByAdmin(Long orderId, OrderStatus status) {
+        if (status == null) {
+            throw new IllegalArgumentException("Order status is required.");
+        }
+
+        Order order = orderRepository.findById(orderId)
+                .orElseThrow(() -> new IllegalArgumentException("Order not found."));
+        order.setStatus(status.name());
+        orderRepository.save(order);
+    }
+
     private User findUserWithRole(Long userId, RoleType expectedRole, String message) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException(message));

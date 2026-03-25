@@ -7,4 +7,6 @@ import java.util.List;
 public interface UserService {
 
     List<UserResponseDto> getAllUsersForAdmin();
+
+    void setUserEnabledByAdmin(Long userId, boolean enabled);
 }
