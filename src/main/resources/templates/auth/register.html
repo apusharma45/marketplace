@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register - Marketplace</title>
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
+</head>
+<body class="page-body">
+<div class="page-shell">
+    <div th:replace="~{fragments/navbar :: appNav('register')}"></div>
+
+    <main class="auth-shell">
+        <section class="auth-card">
+            <span class="eyebrow">Join the marketplace</span>
+            <h1>Create your account</h1>
+            <p>Sign up as a buyer or seller, then continue directly to the right dashboard after login.</p>
+
+            <div class="error-box" th:if="${registrationError}" th:text="${registrationError}"></div>
+            <div class="error-box" th:if="${#fields.hasAnyErrors()}">Please fix the highlighted fields and try again.</div>
+
+            <form th:action="@{/register}" th:object="${registrationRequest}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="username">Username</label>
+                        <input id="username" type="text" th:field="*{username}" minlength="3" maxlength="50" required placeholder="Choose a username">
+                        <span class="field-error" th:if="${#fields.hasErrors('username')}" th:errors="*{username}"></span>
+                    </div>
+
+                    <div class="field">
+                        <label for="email">Email</label>
+                        <input id="email" type="email" th:field="*{email}" maxlength="100" required placeholder="you@example.com">
+                        <span class="field-error" th:if="${#fields.hasErrors('email')}" th:errors="*{email}"></span>
+                    </div>
+
+                    <div class="field">
+                        <label for="password">Password</label>
+                        <input id="password" type="password" th:field="*{password}" minlength="8" maxlength="255" required placeholder="Create a secure password">
+                        <span class="field-error" th:if="${#fields.hasErrors('password')}" th:errors="*{password}"></span>
+                    </div>
+
+                    <div class="field">
+                        <label for="roleType">Register As</label>
+                        <select id="roleType" th:field="*{roleType}" required>
+                            <option value="">Select role</option>
+                            <option value="ROLE_BUYER">Buyer</option>
+                            <option value="ROLE_SELLER">Seller</option>
+                        </select>
+                        <span class="field-error" th:if="${#fields.hasErrors('roleType')}" th:errors="*{roleType}"></span>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Register</button>
+                    <a class="btn btn-secondary" th:href="@{/login}">Already have an account?</a>
+                </div>
+            </form>
+        </section>
+    </main>
+</div>
+</body>
+</html>

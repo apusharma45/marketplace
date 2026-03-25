@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Place Order</title>
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
+</head>
+<body class="page-body">
+<div class="page-shell">
+    <div th:replace="~{fragments/navbar :: appNav('buyer-orders')}"></div>
+
+    <main>
+        <section class="detail-card">
+            <div class="page-title">
+                <h1>Place order</h1>
+                <p>Confirm the item details below and submit your order.</p>
+            </div>
+
+            <div class="error-box" th:if="${orderError}" th:text="${orderError}"></div>
+            <div class="error-box" th:if="${#fields.hasAnyErrors()}">Unable to submit. Please try again.</div>
+
+            <div class="detail-grid">
+                <div class="info-card">
+                    <strong>Product</strong>
+                    <span class="price-tag" th:text="${product.name}">Product</span>
+                </div>
+                <div class="info-card">
+                    <strong>Price</strong>
+                    <span class="price-tag" th:text="${product.price}">0</span>
+                </div>
+                <div class="info-card">
+                    <strong>Seller</strong>
+                    <span class="price-tag" th:text="${product.sellerUsername}">seller</span>
+                </div>
+            </div>
+
+            <form th:action="@{/buyer/orders/create}" th:object="${orderRequest}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <input type="hidden" th:field="*{productId}">
+                <span class="field-error" th:if="${#fields.hasErrors('productId')}" th:errors="*{productId}"></span>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Confirm order</button>
+                    <a class="btn btn-secondary" th:href="@{/buyer/products/{id}(id=${product.id})}">Cancel</a>
+                </div>
+            </form>
+        </section>
+    </main>
+</div>
+</body>
+</html>

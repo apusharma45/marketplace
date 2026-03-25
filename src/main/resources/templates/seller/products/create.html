@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Create Product</title>
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
+</head>
+<body class="page-body">
+<div class="page-shell">
+    <div th:replace="~{fragments/navbar :: appNav('seller-products')}"></div>
+
+    <main>
+        <div class="page-header">
+            <div class="page-title">
+                <h1>Create product</h1>
+                <p>Add a new listing with pricing, stock, description, and buyer visibility.</p>
+            </div>
+        </div>
+
+        <section class="form-card">
+            <div class="error-box" th:if="${productError}" th:text="${productError}"></div>
+            <div class="error-box" th:if="${#fields.hasAnyErrors()}">Please fix the highlighted fields and try again.</div>
+
+            <form th:action="@{/seller/products/create}" th:object="${productRequest}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+
+                <div class="form-grid">
+                    <div class="field full">
+                        <label for="name">Name</label>
+                        <input id="name" type="text" th:field="*{name}" minlength="2" maxlength="120" required placeholder="Product name">
+                        <span class="field-error" th:if="${#fields.hasErrors('name')}" th:errors="*{name}"></span>
+                    </div>
+
+                    <div class="field full">
+                        <label for="description">Description</label>
+                        <textarea id="description" th:field="*{description}" maxlength="1000" placeholder="What makes this product worth buying?"></textarea>
+                        <span class="field-error" th:if="${#fields.hasErrors('description')}" th:errors="*{description}"></span>
+                    </div>
+
+                    <div class="field">
+                        <label for="price">Price</label>
+                        <input id="price" type="number" min="0.01" step="0.01" required th:field="*{price}">
+                        <span class="field-error" th:if="${#fields.hasErrors('price')}" th:errors="*{price}"></span>
+                    </div>
+
+                    <div class="field">
+                        <label for="stockQuantity">Stock quantity</label>
+                        <input id="stockQuantity" type="number" min="0" required th:field="*{stockQuantity}">
+                        <span class="field-error" th:if="${#fields.hasErrors('stockQuantity')}" th:errors="*{stockQuantity}"></span>
+                    </div>
+
+                    <div class="field">
+                        <label for="active">Status</label>
+                        <select id="active" th:field="*{active}">
+                            <option th:value="true">Active</option>
+                            <option th:value="false">Inactive</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-actions">
+                    <button class="btn btn-primary" type="submit">Save product</button>
+                    <a class="btn btn-secondary" th:href="@{/seller/products}">Cancel</a>
+                </div>
+            </form>
+        </section>
+    </main>
+</div>
+</body>
+</html>
