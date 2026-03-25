@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<body>
+<nav th:fragment="appNav(activeSection)" class="app-nav">
+    <a class="brand" th:href="@{/}">
+        <span class="brand-mark">M</span>
+        <span>
+            <span class="brand-title">MarketSquare</span>
+            <span class="brand-subtitle">multi-role marketplace workspace</span>
+        </span>
+    </a>
+
+    <div class="nav-cluster">
+        <div class="nav-links">
+            <a class="nav-link"
+               th:classappend="${activeSection == 'home'} ? ' active'"
+               th:href="@{/}">Home</a>
+
+            <a class="nav-link"
+               sec:authorize="hasRole('ADMIN')"
+               th:classappend="${activeSection == 'admin-dashboard'} ? ' active'"
+               th:href="@{/admin}">Dashboard</a>
+            <a class="nav-link"
+               sec:authorize="hasRole('ADMIN')"
+               th:classappend="${activeSection == 'admin-users'} ? ' active'"
+               th:href="@{/admin/users}">Users</a>
+            <a class="nav-link"
+               sec:authorize="hasRole('ADMIN')"
+               th:classappend="${activeSection == 'admin-products'} ? ' active'"
+               th:href="@{/admin/products}">Products</a>
+            <a class="nav-link"
+               sec:authorize="hasRole('ADMIN')"
+               th:classappend="${activeSection == 'admin-orders'} ? ' active'"
+               th:href="@{/admin/orders}">Orders</a>
+
+            <a class="nav-link"
+               sec:authorize="hasRole('SELLER')"
+               th:classappend="${activeSection == 'seller-dashboard'} ? ' active'"
+               th:href="@{/seller}">Dashboard</a>
+            <a class="nav-link"
+               sec:authorize="hasRole('SELLER')"
+               th:classappend="${activeSection == 'seller-products'} ? ' active'"
+               th:href="@{/seller/products}">My Products</a>
+            <a class="nav-link"
+               sec:authorize="hasRole('SELLER')"
+               th:classappend="${activeSection == 'seller-orders'} ? ' active'"
+               th:href="@{/seller/orders}">Sales</a>
+
+            <a class="nav-link"
+               sec:authorize="hasRole('BUYER')"
+               th:classappend="${activeSection == 'buyer-dashboard'} ? ' active'"
+               th:href="@{/buyer}">Dashboard</a>
+            <a class="nav-link"
+               sec:authorize="hasRole('BUYER')"
+               th:classappend="${activeSection == 'buyer-products'} ? ' active'"
+               th:href="@{/buyer/products}">Browse</a>
+            <a class="nav-link"
+               sec:authorize="hasRole('BUYER')"
+               th:classappend="${activeSection == 'buyer-orders'} ? ' active'"
+               th:href="@{/buyer/orders}">My Orders</a>
+
+            <a class="nav-link"
+               sec:authorize="!isAuthenticated()"
+               th:classappend="${activeSection == 'buyer-products'} ? ' active'"
+               th:href="@{/buyer/products}">Browse</a>
+
+            <a class="nav-link"
+               sec:authorize="!isAuthenticated()"
+               th:classappend="${activeSection == 'login'} ? ' active'"
+               th:href="@{/login}">Login</a>
+            <a class="nav-link"
+               sec:authorize="!isAuthenticated()"
+               th:classappend="${activeSection == 'register'} ? ' active'"
+               th:href="@{/register}">Register</a>
+        </div>
+
+        <div class="account-actions">
+            <span class="user-pill" sec:authorize="isAuthenticated()">
+                Signed in as <strong sec:authentication="name"></strong>
+            </span>
+
+            <form sec:authorize="isAuthenticated()" th:action="@{/logout}" method="post" class="logout-form">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <button class="btn btn-secondary" type="submit">Logout</button>
+            </form>
+        </div>
+    </div>
+</nav>
+</body>
+</html>

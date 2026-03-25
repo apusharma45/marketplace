@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MarketSquare</title>
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
+</head>
+<body class="page-body">
+<div class="page-shell">
+    <div th:replace="~{fragments/navbar :: appNav('home')}"></div>
+
+    <main>
+        <section class="hero">
+            <div>
+                <span class="eyebrow">Marketplace control center</span>
+                <h1>One storefront for buyers, sellers, and admins.</h1>
+                <p class="lead">
+                    Browse live products, manage listings, review orders, and keep the whole marketplace organized
+                    from a cleaner shared workspace.
+                </p>
+                <p class="lead">Built with Spring Boot, Thymeleaf, PostgreSQL, and role-based access control.</p>
+
+                <div class="hero-actions" sec:authorize="!isAuthenticated()">
+                    <a class="btn btn-primary" th:href="@{/register}">Create account</a>
+                    <a class="btn btn-secondary" th:href="@{/login}">Login</a>
+                    <a class="btn btn-secondary" th:href="@{/buyer/products}">Browse products</a>
+                </div>
+
+                <div class="hero-actions" sec:authorize="isAuthenticated()">
+                    <a class="btn btn-primary" th:href="@{/dashboard}">Open dashboard</a>
+                    <a class="btn btn-secondary" th:href="@{/buyer/products}">Browse products</a>
+                </div>
+            </div>
+
+            <div class="hero-side">
+                <div class="info-card">
+                    <strong>Admin workspace</strong>
+                    <p class="lead">Track users, inventory, and marketplace activity from one dashboard.</p>
+                </div>
+                <div class="info-card">
+                    <strong>Seller workflow</strong>
+                    <p class="lead">Create products, watch low-stock items, and review incoming orders quickly.</p>
+                </div>
+                <div class="info-card">
+                    <strong>Buyer experience</strong>
+                    <p class="lead">Discover products, place orders, and review purchase history in one place.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section-grid">
+            <div class="section-card span-4">
+                <div class="section-head">
+                    <div>
+                        <h2>For Admins</h2>
+                        <p>High-level visibility across the entire marketplace.</p>
+                    </div>
+                </div>
+                <div class="quick-links">
+                    <a class="quick-link" th:href="@{/admin}">
+                        <strong>Operations dashboard</strong>
+                        <span>See users, products, orders, and recent activity at a glance.</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="section-card span-4">
+                <div class="section-head">
+                    <div>
+                        <h2>For Sellers</h2>
+                        <p>Manage catalog, stock, and incoming demand.</p>
+                    </div>
+                </div>
+                <div class="quick-links">
+                    <a class="quick-link" th:href="@{/seller}">
+                        <strong>Seller dashboard</strong>
+                        <span>Jump into listings, new products, and order summaries.</span>
+                    </a>
+                </div>
+            </div>
+
+            <div class="section-card span-4">
+                <div class="section-head">
+                    <div>
+                        <h2>For Buyers</h2>
+                        <p>Explore active products and keep track of purchases.</p>
+                    </div>
+                </div>
+                <div class="quick-links">
+                    <a class="quick-link" th:href="@{/buyer}">
+                        <strong>Buyer dashboard</strong>
+                        <span>View featured products, recent orders, and shortcuts to browse.</span>
+                    </a>
+                </div>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>

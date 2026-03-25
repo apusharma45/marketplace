@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Product Details</title>
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
+</head>
+<body class="page-body">
+<div class="page-shell">
+    <div th:replace="~{fragments/navbar :: appNav('buyer-products')}"></div>
+
+    <main>
+        <section class="detail-card">
+            <div class="page-title">
+                <h1 th:text="${product.name}">Product</h1>
+                <p>Review the item details and place your order when you are ready.</p>
+            </div>
+
+            <div class="detail-grid">
+                <div class="info-card">
+                    <strong>Price</strong>
+                    <span class="price-tag" th:text="${product.price}">0</span>
+                </div>
+                <div class="info-card">
+                    <strong>Seller</strong>
+                    <span class="price-tag" th:text="${product.sellerUsername}">seller</span>
+                </div>
+                <div class="info-card">
+                    <strong>Stock</strong>
+                    <span class="price-tag" th:text="${product.stockQuantity}">0</span>
+                </div>
+            </div>
+
+            <section class="section-card">
+                <div class="section-head">
+                    <div>
+                        <h2>Description</h2>
+                        <p>Product details shared by the seller.</p>
+                    </div>
+                </div>
+                <p th:text="${product.description != null and !product.description.isBlank() ? product.description : 'No description available.'}">Description</p>
+            </section>
+
+            <div class="form-actions">
+                <a class="btn btn-secondary" th:href="@{/buyer/products}">Back to products</a>
+                <a class="btn btn-primary" th:href="@{/buyer/orders/create/{id}(id=${product.id})}">Place order</a>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>
