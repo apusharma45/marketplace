@@ -12,8 +12,13 @@
 
     <main class="auth-shell">
         <section class="auth-card">
+            <div class="auth-switch" aria-label="Authentication pages">
+                <a class="auth-tab active" th:href="@{/login}">Sign In</a>
+                <a class="auth-tab" th:href="@{/register}">Sign Up</a>
+            </div>
+
             <span class="eyebrow">Welcome back</span>
-            <h1>Login to your marketplace workspace</h1>
+            <h1>Sign in to your account</h1>
             <p>Use your username or email to continue to your buyer, seller, or admin dashboard.</p>
 
             <div class="notice" th:if="${param.registered}">Registration successful. Please login.</div>
@@ -36,8 +41,7 @@
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Login</button>
-                    <a class="btn btn-secondary" th:href="@{/register}">Create account</a>
+                    <button type="submit" class="btn btn-primary">Sign In</button>
                 </div>
             </form>
         </section>

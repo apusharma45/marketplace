@@ -12,15 +12,20 @@
 
     <main class="auth-shell">
         <section class="auth-card">
+            <div class="auth-switch" aria-label="Authentication pages">
+                <a class="auth-tab" th:href="@{/login}">Sign In</a>
+                <a class="auth-tab active" th:href="@{/register}">Sign Up</a>
+            </div>
+
             <span class="eyebrow">Join the marketplace</span>
             <h1>Create your account</h1>
             <p>Sign up as a buyer or seller, then continue directly to the right dashboard after login.</p>
 
             <div class="error-box" th:if="${registrationError}" th:text="${registrationError}"></div>
-            <div class="error-box" th:if="${#fields.hasAnyErrors()}">Please fix the highlighted fields and try again.</div>
 
             <form th:action="@{/register}" th:object="${registrationRequest}" method="post">
                 <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <div class="error-box" th:if="${#fields.hasAnyErrors()}">Please fix the highlighted fields and try again.</div>
 
                 <div class="form-grid">
                     <div class="field">
@@ -53,8 +58,7 @@
                 </div>
 
                 <div class="form-actions">
-                    <button type="submit" class="btn btn-primary">Register</button>
-                    <a class="btn btn-secondary" th:href="@{/login}">Already have an account?</a>
+                    <button type="submit" class="btn btn-primary">Create Account</button>
                 </div>
             </form>
         </section>
