@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>All Orders (Admin)</title>
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
+</head>
+<body class="page-body">
+<div class="page-shell">
+    <div th:replace="~{fragments/navbar :: appNav('admin-orders')}"></div>
+
+    <main>
+        <div class="page-header">
+            <div class="page-title">
+                <h1>All orders</h1>
+                <p>Complete order history across the marketplace, including buyers, sellers, totals, and timestamps.</p>
+            </div>
+            <div class="toolbar">
+                <a class="btn btn-secondary" th:href="@{/admin}">Dashboard</a>
+                <a class="btn btn-primary" th:href="@{/admin/products}">Products</a>
+            </div>
+        </div>
+
+        <section class="section-card">
+            <div class="notice" th:if="${param.updated}">Order status updated.</div>
+            <div class="error-box" th:if="${param.failed}">Unable to update order status.</div>
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Buyer</th>
+                        <th>Product</th>
+                        <th>Seller</th>
+                        <th>Status</th>
+                        <th>Payment</th>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>Date</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(orders)}">
+                        <td colspan="10">No orders found.</td>
+                    </tr>
+                    <tr th:each="order : ${orders}">
+                        <td th:text="${order.id}">1</td>
+                        <td th:text="${order.buyerUsername}">buyer</td>
+                        <td th:text="${order.productName}">product</td>
+                        <td th:text="${order.sellerUsername}">seller</td>
+                        <td><span class="badge warning" th:text="${order.status}">PENDING</span></td>
+                        <td th:text="${order.paymentMethod}">COD</td>
+                        <td th:text="${order.itemCount != null ? order.itemCount : 1}">1</td>
+                        <td th:text="${order.totalAmount}">0</td>
+                        <td th:text="${order.orderDate != null ? #temporals.format(order.orderDate, 'dd MMM yyyy HH:mm') : '-'}">date</td>
+                        <td>
+                            <form th:action="@{/admin/orders/{orderId}/status(orderId=${order.id})}" method="post" class="table-actions">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <select name="status">
+                                    <option th:each="status : ${allStatuses}"
+                                            th:value="${status}"
+                                            th:text="${status}"
+                                            th:selected="${status == order.status}">
+                                    </option>
+                                </select>
+                                <button class="btn btn-secondary" type="submit">Update</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>

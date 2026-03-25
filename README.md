@@ -1,19 +1,23 @@
-﻿# marketplace
+# marketplace
 
-## Docker PostgreSQL setup
+## Docker setup (App + PostgreSQL)
 
-This project is configured to use PostgreSQL with:
-- database: `marketplace`
-- username: `postgres`
-- password: `1245`
-- port: `5433`
+Before running Docker, set environment variables in your terminal.
 
-The Docker setup uses defaults from `docker-compose.yml`, so it works with the current `application.properties`.
-
-### 1. Start PostgreSQL container
+PowerShell:
 
 ```powershell
-docker compose up -d
+$env:POSTGRES_DB="marketplace"
+$env:POSTGRES_USER="postgres"
+$env:POSTGRES_PASSWORD="your_strong_password"
+```
+
+The Docker setup uses these environment variables for both PostgreSQL and Spring Boot.
+
+### 1. Build and start application + database
+
+```powershell
+docker compose up --build -d
 ```
 
 ### 2. Check container status
@@ -22,13 +26,12 @@ docker compose up -d
 docker compose ps
 ```
 
-### 3. Run the Spring Boot app
+### 3. Access the app
 
-```powershell
-./mvnw.cmd spring-boot:run
-```
+- App: `http://localhost:8080`
+- PostgreSQL: `localhost:5433`
 
-### 4. Stop container when done
+### 4. Stop containers when done
 
 ```powershell
 docker compose down

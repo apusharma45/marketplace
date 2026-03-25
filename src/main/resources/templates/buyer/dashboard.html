@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buyer Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
+</head>
+<body class="page-body">
+<div class="page-shell">
+    <div th:replace="~{fragments/navbar :: appNav('buyer-dashboard')}"></div>
+
+    <main>
+        <section class="hero">
+            <div>
+                <span class="eyebrow">Buyer workspace</span>
+                <h1>Browse products, place orders, and track your activity.</h1>
+                <p class="lead">
+                    Your dashboard highlights what is available to buy right now, what you have already ordered,
+                    and the fastest path back into the catalog.
+                </p>
+                <div class="hero-actions">
+                    <a class="btn btn-primary" th:href="@{/buyer/products}">Browse products</a>
+                    <a class="btn btn-secondary" th:href="@{/buyer/orders}">My orders</a>
+                </div>
+            </div>
+
+            <div class="hero-side">
+                <div class="info-card">
+                    <strong>Total spent</strong>
+                    <span class="price-tag" th:text="${totalSpent}">0</span>
+                </div>
+                <div class="info-card">
+                    <strong>In-stock products</strong>
+                    <span class="price-tag" th:text="${inStockProducts}">0</span>
+                </div>
+            </div>
+        </section>
+
+        <section class="stats-grid">
+            <article class="stat-card">
+                <span class="label">Available products</span>
+                <span class="value" th:text="${availableProductCount}">0</span>
+                <span class="hint">Active listings you can browse right now</span>
+            </article>
+            <article class="stat-card">
+                <span class="label">In stock</span>
+                <span class="value" th:text="${inStockProducts}">0</span>
+                <span class="hint">Listings with inventory ready to order</span>
+            </article>
+            <article class="stat-card">
+                <span class="label">Orders placed</span>
+                <span class="value" th:text="${orderCount}">0</span>
+                <span class="hint">Your historical orders in this marketplace</span>
+            </article>
+            <article class="stat-card">
+                <span class="label">Total spent</span>
+                <span class="value" th:text="${totalSpent}">0</span>
+                <span class="hint">Aggregate order total for your account</span>
+            </article>
+        </section>
+
+        <section class="section-grid">
+            <article class="section-card span-8">
+                <div class="section-head">
+                    <div>
+                        <h2>Featured products</h2>
+                        <p>Recently added items you can jump into right away.</p>
+                    </div>
+                    <a class="btn btn-secondary" th:href="@{/buyer/products}">Open full catalog</a>
+                </div>
+                <div class="empty-state" th:if="${#lists.isEmpty(featuredProducts)}">No products are available right now.</div>
+                <div class="products-grid" th:if="${!#lists.isEmpty(featuredProducts)}">
+                    <article class="product-card" th:each="product : ${featuredProducts}">
+                        <div class="badge-row">
+                            <span class="badge alt" th:text="|Seller: ${product.sellerUsername}|">Seller</span>
+                            <span class="badge warning" th:text="|Stock: ${product.stockQuantity}|">Stock</span>
+                        </div>
+                        <h3 th:text="${product.name}">Product</h3>
+                        <p th:text="${product.description != null and !product.description.isBlank() ? product.description : 'No description provided yet.'}">Description</p>
+                        <strong class="price-tag" th:text="${product.price}">0</strong>
+                        <div class="hero-actions">
+                            <a class="btn btn-primary" th:href="@{/buyer/products/{id}(id=${product.id})}">View details</a>
+                        </div>
+                    </article>
+                </div>
+            </article>
+
+            <article class="section-card span-4">
+                <div class="section-head">
+                    <div>
+                        <h2>Recent orders</h2>
+                        <p>Your latest activity.</p>
+                    </div>
+                </div>
+                <div class="empty-state" th:if="${#lists.isEmpty(recentOrders)}">You have not placed any orders yet.</div>
+                <ul class="simple-list" th:if="${!#lists.isEmpty(recentOrders)}">
+                    <li class="list-item" th:each="order : ${recentOrders}">
+                        <div class="list-primary">
+                            <strong th:text="${order.productName}">Product</strong>
+                            <span class="badge warning" th:text="${order.status}">PENDING</span>
+                        </div>
+                        <div class="meta-row">
+                            <span th:text="|Seller: ${order.sellerUsername}|">seller</span>
+                            <span th:text="|Total: ${order.totalAmount}|">0</span>
+                            <span th:text="${order.orderDate != null ? #temporals.format(order.orderDate, 'dd MMM yyyy HH:mm') : 'Recently'}">date</span>
+                        </div>
+                    </li>
+                </ul>
+            </article>
+        </section>
+    </main>
+</div>
+</body>
+</html>

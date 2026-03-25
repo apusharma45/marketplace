@@ -31,3 +31,9 @@ build/
 
 ### VS Code ###
 .vscode/
+
+# Local environment secrets
+.env
+
+# Local seed data (keep out of git)
+database/seed.local.sql

@@ -1,6 +1,7 @@
 package com.software.marketplace.dto.order;
 
 import com.software.marketplace.entity.enums.OrderStatus;
+import com.software.marketplace.entity.enums.PaymentMethod;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -24,6 +25,9 @@ public class OrderResponseDto {
     private String productName;
     private String sellerUsername;
     private OrderStatus status;
+    private PaymentMethod paymentMethod;
+    private Integer itemCount;
+    private Integer quantity;
     private BigDecimal totalAmount;
     private LocalDateTime orderDate;
 }

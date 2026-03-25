@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Orders</title>
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
+</head>
+<body class="page-body">
+<div class="page-shell">
+    <div th:replace="~{fragments/navbar :: appNav('buyer-orders')}"></div>
+
+    <main>
+        <div class="page-header">
+            <div class="page-title">
+                <h1>My orders</h1>
+                <p>Review your purchase history, seller information, and order totals.</p>
+            </div>
+            <div class="toolbar">
+                <a class="btn btn-secondary" th:href="@{/buyer}">Dashboard</a>
+                <a class="btn btn-primary" th:href="@{/buyer/products}">Browse products</a>
+            </div>
+        </div>
+
+        <div class="notice" th:if="${param.placed}">Order placed successfully.</div>
+
+        <section class="section-card">
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Product</th>
+                        <th>Seller</th>
+                        <th>Status</th>
+                        <th>Payment</th>
+                        <th>Items</th>
+                        <th>Total</th>
+                        <th>Date</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:if="${#lists.isEmpty(orders)}">
+                        <td colspan="8">No orders found.</td>
+                    </tr>
+                    <tr th:each="order : ${orders}">
+                        <td th:text="${order.id}">1</td>
+                        <td th:text="${order.productName}">product</td>
+                        <td th:text="${order.sellerUsername}">seller</td>
+                        <td><span class="badge warning" th:text="${order.status}">PENDING</span></td>
+                        <td th:text="${order.paymentMethod}">COD</td>
+                        <td th:text="${order.itemCount != null ? order.itemCount : 1}">1</td>
+                        <td th:text="${order.totalAmount}">0</td>
+                        <td th:text="${order.orderDate != null ? #temporals.format(order.orderDate, 'dd MMM yyyy HH:mm') : '-'}">date</td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>

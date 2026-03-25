@@ -23,9 +23,11 @@ public class Order {
     @JoinColumn(name = "buyer_id")
     private User buyer;
 
+    @Builder.Default
     private LocalDateTime createdAt = LocalDateTime.now();
 
     private String status;
+    private String paymentMethod;
 
     @OneToMany(mappedBy = "order", cascade = CascadeType.ALL)
     private List<OrderItem> items;

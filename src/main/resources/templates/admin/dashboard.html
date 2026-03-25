@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard</title>
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
+</head>
+<body class="page-body">
+<div class="page-shell">
+    <div th:replace="~{fragments/navbar :: appNav('admin-dashboard')}"></div>
+
+    <main>
+        <div class="page-header">
+            <div class="page-title">
+                <h1>Admin dashboard</h1>
+                <p>Marketplace health, user growth, listings, and orders in one place.</p>
+            </div>
+            <div class="toolbar">
+                <a class="btn btn-secondary" th:href="@{/admin/users}">All users</a>
+                <a class="btn btn-secondary" th:href="@{/admin/products}">All products</a>
+                <a class="btn btn-primary" th:href="@{/admin/orders}">All orders</a>
+            </div>
+        </div>
+
+        <section class="stats-grid">
+            <article class="stat-card">
+                <span class="label">Total users</span>
+                <span class="value" th:text="${userCount}">0</span>
+                <span class="hint" th:text="|${sellerCount} sellers / ${buyerCount} buyers|">0 sellers / 0 buyers</span>
+            </article>
+            <article class="stat-card">
+                <span class="label">Products</span>
+                <span class="value" th:text="${productCount}">0</span>
+                <span class="hint" th:text="|${activeProducts} active listings|">0 active listings</span>
+            </article>
+            <article class="stat-card">
+                <span class="label">Orders</span>
+                <span class="value" th:text="${orderCount}">0</span>
+                <span class="hint">Current marketplace order volume</span>
+            </article>
+            <article class="stat-card">
+                <span class="label">Gross volume</span>
+                <span class="value" th:text="${grossVolume}">0</span>
+                <span class="hint">Aggregate order total across the platform</span>
+            </article>
+        </section>
+
+        <section class="quick-links">
+            <a class="quick-link" th:href="@{/admin/users}">
+                <strong>Review accounts</strong>
+                <span>Inspect registered users, roles, and account status.</span>
+            </a>
+            <a class="quick-link" th:href="@{/admin/products}">
+                <strong>Inspect catalog</strong>
+                <span>Audit listings, stock, pricing, and seller ownership.</span>
+            </a>
+            <a class="quick-link" th:href="@{/admin/orders}">
+                <strong>Track orders</strong>
+                <span>See buyer activity, sellers, order totals, and timestamps.</span>
+            </a>
+        </section>
+
+        <section class="section-grid">
+            <article class="section-card span-4">
+                <div class="section-head">
+                    <div>
+                        <h2>Recent users</h2>
+                        <p>Newest accounts created in the marketplace.</p>
+                    </div>
+                </div>
+                <div class="empty-state" th:if="${#lists.isEmpty(recentUsers)}">No users have registered yet.</div>
+                <ul class="simple-list" th:if="${!#lists.isEmpty(recentUsers)}">
+                    <li class="list-item" th:each="user : ${recentUsers}">
+                        <div class="list-primary">
+                            <strong th:text="${user.username}">username</strong>
+                            <span class="badge" th:classappend="${user.enabled} ? ' success' : ' muted'"
+                                  th:text="${user.enabled ? 'Enabled' : 'Disabled'}">Enabled</span>
+                        </div>
+                        <div class="meta-row">
+                            <span th:text="${user.email}">user@example.com</span>
+                            <span th:text="${#strings.listJoin(user.roles, ', ')}">ROLE_BUYER</span>
+                            <span th:text="${user.createdAt != null ? #temporals.format(user.createdAt, 'dd MMM yyyy HH:mm') : 'Recently'}">date</span>
+                        </div>
+                    </li>
+                </ul>
+            </article>
+
+            <article class="section-card span-4">
+                <div class="section-head">
+                    <div>
+                        <h2>Recent products</h2>
+                        <p>Latest catalog additions and updates.</p>
+                    </div>
+                </div>
+                <div class="empty-state" th:if="${#lists.isEmpty(recentProducts)}">No products available yet.</div>
+                <ul class="simple-list" th:if="${!#lists.isEmpty(recentProducts)}">
+                    <li class="list-item" th:each="product : ${recentProducts}">
+                        <div class="list-primary">
+                            <strong th:text="${product.name}">Product</strong>
+                            <span class="badge" th:classappend="${product.active} ? ' success' : ' muted'"
+                                  th:text="${product.active ? 'Active' : 'Inactive'}">Active</span>
+                        </div>
+                        <div class="meta-row">
+                            <span th:text="|Seller: ${product.sellerUsername}|">Seller</span>
+                            <span th:text="|Stock: ${product.stockQuantity}|">Stock</span>
+                            <span th:text="${product.createdAt != null ? #temporals.format(product.createdAt, 'dd MMM yyyy HH:mm') : 'Recently'}">date</span>
+                        </div>
+                    </li>
+                </ul>
+            </article>
+
+            <article class="section-card span-4">
+                <div class="section-head">
+                    <div>
+                        <h2>Recent orders</h2>
+                        <p>Latest transactions placed by buyers.</p>
+                    </div>
+                </div>
+                <div class="empty-state" th:if="${#lists.isEmpty(recentOrders)}">No orders have been placed yet.</div>
+                <ul class="simple-list" th:if="${!#lists.isEmpty(recentOrders)}">
+                    <li class="list-item" th:each="order : ${recentOrders}">
+                        <div class="list-primary">
+                            <strong th:text="${order.productName}">Product</strong>
+                            <span class="badge warning" th:text="${order.status}">PENDING</span>
+                        </div>
+                        <div class="meta-row">
+                            <span th:text="|Buyer: ${order.buyerUsername}|">Buyer</span>
+                            <span th:text="|Seller: ${order.sellerUsername}|">Seller</span>
+                            <span th:text="|Total: ${order.totalAmount}|">0</span>
+                            <span th:text="${order.orderDate != null ? #temporals.format(order.orderDate, 'dd MMM yyyy HH:mm') : 'Recently'}">date</span>
+                        </div>
+                    </li>
+                </ul>
+            </article>
+        </section>
+    </main>
+</div>
+</body>
+</html>
