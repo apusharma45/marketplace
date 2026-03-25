@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>My Cart</title>
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
+</head>
+<body class="page-body">
+<div class="page-shell">
+    <div th:replace="~{fragments/navbar :: appNav('buyer-cart')}"></div>
+
+    <main>
+        <div class="page-header">
+            <div class="page-title">
+                <h1>My cart</h1>
+                <p>Review selected products, choose payment method, and place one combined order.</p>
+            </div>
+            <div class="toolbar">
+                <a class="btn btn-secondary" th:href="@{/buyer/products}">Browse products</a>
+                <a class="btn btn-secondary" th:href="@{/buyer/orders}">My orders</a>
+            </div>
+        </div>
+
+        <div class="notice" th:if="${param.added}">Item added to cart.</div>
+        <div class="notice" th:if="${param.removed}">Item removed from cart.</div>
+        <div class="error-box" th:if="${orderError}" th:text="${orderError}"></div>
+
+        <section class="section-card" th:if="${#lists.isEmpty(cartLines)}">
+            <div class="empty-state">Your cart is empty. Add products from the catalog.</div>
+        </section>
+
+        <section class="section-card" th:if="${!#lists.isEmpty(cartLines)}">
+            <div class="table-wrap">
+                <table class="data-table">
+                    <thead>
+                    <tr>
+                        <th>Product</th>
+                        <th>Seller</th>
+                        <th>Price</th>
+                        <th>Qty</th>
+                        <th>Line total</th>
+                        <th>Action</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                    <tr th:each="line : ${cartLines}">
+                        <td th:text="${line.product().name}">Product</td>
+                        <td th:text="${line.product().sellerUsername}">Seller</td>
+                        <td th:text="${line.product().price}">0</td>
+                        <td>
+                            <div class="table-actions">
+                                <form th:action="@{/buyer/cart/decrement/{productId}(productId=${line.product().id})}" method="post" class="logout-form">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                    <button class="btn btn-secondary qty-btn" type="submit">-</button>
+                                </form>
+                                <span th:text="${line.quantity()}">1</span>
+                                <form th:action="@{/buyer/cart/increment/{productId}(productId=${line.product().id})}" method="post" class="logout-form">
+                                    <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                    <button class="btn btn-secondary qty-btn" type="submit">+</button>
+                                </form>
+                            </div>
+                        </td>
+                        <td th:text="${line.lineTotal()}">0</td>
+                        <td>
+                            <form th:action="@{/buyer/cart/remove/{productId}(productId=${line.product().id})}" method="post" class="logout-form">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <button class="btn btn-danger" type="submit">Remove</button>
+                            </form>
+                        </td>
+                    </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="form-actions">
+                <strong>Total: <span th:text="${cartTotal}">0</span></strong>
+            </div>
+
+            <form th:action="@{/buyer/cart/checkout}" method="post">
+                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="paymentMethod">Payment Method</label>
+                        <select id="paymentMethod" name="paymentMethod">
+                            <option th:each="method : ${paymentMethods}" th:value="${method}" th:text="${method}"></option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary">Place order</button>
+                </div>
+            </form>
+        </section>
+    </main>
+</div>
+</body>
+</html>

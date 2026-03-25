@@ -22,4 +22,6 @@ public interface ProductService {
     ProductResponseDto updateProductForSeller(Long productId, Long sellerId, ProductUpsertRequestDto request);
 
     void deleteProductForSeller(Long productId, Long sellerId);
+
+    void deleteProductForAdmin(Long productId);
 }

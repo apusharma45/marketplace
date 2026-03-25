@@ -33,19 +33,23 @@
                         <th>Product</th>
                         <th>Seller</th>
                         <th>Status</th>
+                        <th>Payment</th>
+                        <th>Items</th>
                         <th>Total</th>
                         <th>Date</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:if="${#lists.isEmpty(orders)}">
-                        <td colspan="6">No orders found.</td>
+                        <td colspan="8">No orders found.</td>
                     </tr>
                     <tr th:each="order : ${orders}">
                         <td th:text="${order.id}">1</td>
                         <td th:text="${order.productName}">product</td>
                         <td th:text="${order.sellerUsername}">seller</td>
                         <td><span class="badge warning" th:text="${order.status}">PENDING</span></td>
+                        <td th:text="${order.paymentMethod}">COD</td>
+                        <td th:text="${order.itemCount != null ? order.itemCount : 1}">1</td>
                         <td th:text="${order.totalAmount}">0</td>
                         <td th:text="${order.orderDate != null ? #temporals.format(order.orderDate, 'dd MMM yyyy HH:mm') : '-'}">date</td>
                     </tr>

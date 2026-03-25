@@ -34,4 +34,13 @@ public class UserServiceImpl implements UserService {
                         .build())
                 .toList();
     }
+
+    @Override
+    @Transactional
+    public void setUserEnabledByAdmin(Long userId, boolean enabled) {
+        var user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("User not found."));
+        user.setEnabled(enabled);
+        userRepository.save(user);
+    }
 }

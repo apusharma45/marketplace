@@ -5,6 +5,7 @@ import com.software.marketplace.dto.product.ProductUpsertRequestDto;
 import com.software.marketplace.entity.Product;
 import com.software.marketplace.entity.User;
 import com.software.marketplace.entity.enums.RoleType;
+import com.software.marketplace.repository.OrderItemRepository;
 import com.software.marketplace.repository.ProductRepository;
 import com.software.marketplace.repository.UserRepository;
 import com.software.marketplace.service.ProductService;
@@ -20,6 +21,7 @@ public class ProductServiceImpl implements ProductService {
 
     private final ProductRepository productRepository;
     private final UserRepository userRepository;
+    private final OrderItemRepository orderItemRepository;
 
     @Override
     @Transactional(readOnly = true)
@@ -104,6 +106,18 @@ public class ProductServiceImpl implements ProductService {
     @Transactional
     public void deleteProductForSeller(Long productId, Long sellerId) {
         Product product = findProductOwnedBySeller(productId, sellerId);
+        productRepository.delete(product);
+    }
+
+    @Override
+    @Transactional
+    public void deleteProductForAdmin(Long productId) {
+        Product product = productRepository.findById(productId)
+                .orElseThrow(() -> new IllegalArgumentException("Product not found."));
+
+        if (orderItemRepository.existsByProductId(productId)) {
+            throw new IllegalArgumentException("Product cannot be deleted because it has order history.");
+        }
         productRepository.delete(product);
     }
 

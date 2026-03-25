@@ -23,6 +23,8 @@
         </div>
 
         <section class="section-card">
+            <div class="notice" th:if="${param.deleted}">Product removed.</div>
+            <div class="error-box" th:if="${param.failed}">Unable to delete product (possibly due to existing order history).</div>
             <div class="table-wrap">
                 <table class="data-table">
                     <thead>
@@ -34,11 +36,12 @@
                         <th>Stock</th>
                         <th>Status</th>
                         <th>Created</th>
+                        <th>Action</th>
                     </tr>
                     </thead>
                     <tbody>
                     <tr th:if="${#lists.isEmpty(products)}">
-                        <td colspan="7">No products found.</td>
+                        <td colspan="8">No products found.</td>
                     </tr>
                     <tr th:each="product : ${products}">
                         <td th:text="${product.id}">1</td>
@@ -51,6 +54,12 @@
                                   th:text="${product.active ? 'Active' : 'Inactive'}">Active</span>
                         </td>
                         <td th:text="${product.createdAt != null ? #temporals.format(product.createdAt, 'dd MMM yyyy HH:mm') : '-'}">date</td>
+                        <td>
+                            <form th:action="@{/admin/products/{productId}/delete(productId=${product.id})}" method="post" class="logout-form">
+                                <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}">
+                                <button class="btn btn-danger" type="submit">Delete</button>
+                            </form>
+                        </td>
                     </tr>
                     </tbody>
                 </table>

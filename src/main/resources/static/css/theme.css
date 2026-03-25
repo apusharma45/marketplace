@@ -668,6 +668,21 @@ textarea:focus {
     margin-top: 4px;
 }
 
+.qty-stepper {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.qty-stepper input {
+    width: 110px;
+}
+
+.qty-btn {
+    min-width: 40px;
+    padding: 8px 12px;
+}
+
 @media (max-width: 980px) {
     .app-nav,
     .page-header {

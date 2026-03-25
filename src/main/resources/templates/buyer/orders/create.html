@@ -40,6 +40,25 @@
                 <div class="error-box" th:if="${#fields.hasAnyErrors()}">Unable to submit. Please try again.</div>
                 <span class="field-error" th:if="${#fields.hasErrors('productId')}" th:errors="*{productId}"></span>
 
+                <div class="form-grid">
+                    <div class="field">
+                        <label for="quantity">Quantity</label>
+                        <div class="qty-stepper">
+                            <button type="button" class="btn btn-secondary qty-btn" onclick="adjustQty(-1)">-</button>
+                            <input id="quantity" type="number" min="1" th:field="*{quantity}" required>
+                            <button type="button" class="btn btn-secondary qty-btn" onclick="adjustQty(1)">+</button>
+                        </div>
+                        <span class="field-error" th:if="${#fields.hasErrors('quantity')}" th:errors="*{quantity}"></span>
+                    </div>
+
+                    <div class="field">
+                        <label for="paymentMethod">Payment Method</label>
+                        <select id="paymentMethod" th:field="*{paymentMethod}">
+                            <option th:each="method : ${paymentMethods}" th:value="${method}" th:text="${method}"></option>
+                        </select>
+                    </div>
+                </div>
+
                 <div class="form-actions">
                     <button type="submit" class="btn btn-primary">Confirm order</button>
                     <a class="btn btn-secondary" th:href="@{/buyer/products/{id}(id=${product.id})}">Cancel</a>
@@ -48,5 +67,13 @@
         </section>
     </main>
 </div>
+<script>
+    function adjustQty(delta) {
+        const input = document.getElementById('quantity');
+        const current = parseInt(input.value || '1', 10);
+        const next = Math.max(1, current + delta);
+        input.value = next;
+    }
+</script>
 </body>
 </html>
