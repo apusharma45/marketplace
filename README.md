@@ -10,10 +10,14 @@ This project was developed for the CSE 3220 Software Engineering Lab and is cent
 
 ## Project Status
 
-- Repository: `https://github.com/apusharma45/marketplace`
+- Repository: [GitHub Repository](https://github.com/apusharma45/marketplace)
 - CI: GitHub Actions is configured to build and run tests on pushes and pull requests
 - Docker: `Dockerfile` and `docker-compose.yml` are included
-- Deployment: a deployed version exists, but no public URL is documented in this repository at the moment
+- Deployment: public demo URL is available below
+
+## Live Demo
+
+- Deployed App: [marketplace-9pg2.onrender.com](https://marketplace-9pg2.onrender.com)
 
 ## Deployed Demo Accounts
 
