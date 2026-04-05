@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Access Denied - Marketplace</title>
+    <link rel="stylesheet" th:href="@{/css/theme.css}">
+</head>
+<body class="page-body">
+<div class="page-shell">
+    <div th:replace="~{fragments/navbar :: appNav('home')}"></div>
+
+    <main class="auth-shell">
+        <section class="auth-card">
+            <span class="eyebrow">403 Forbidden</span>
+            <h1>Access denied</h1>
+            <p>You are logged in, but your role is not allowed to open this page.</p>
+            <div class="form-actions">
+                <a class="btn btn-primary" th:href="@{/dashboard}">Go to Dashboard</a>
+            </div>
+        </section>
+    </main>
+</div>
+</body>
+</html>
