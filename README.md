@@ -15,14 +15,35 @@ This project was developed for the CSE 3220 Software Engineering Lab and is cent
 - Docker: `Dockerfile` and `docker-compose.yml` are included
 - Deployment: a deployed version exists, but no public URL is documented in this repository at the moment
 
-## Deployed Version Admin Account
+## Deployed Demo Accounts
 
-The deployed version includes a built-in admin account:
+The deployed version includes seeded demo accounts for testing.
 
-- Name: `Apu Sharma`
-- Email: `admin@marketplace.live`
+Default password for seeded non-admin users:
 
-If you want to log in to the deployed admin account, use the email above. The password is not documented in this repository.
+- `password123`
+
+### Admin
+
+| Role | Name | Email | Password |
+| --- | --- | --- | --- |
+| Admin | `Apu Sharma` | `admin@marketplace.live` | `admin123` |
+
+### Sellers
+
+| Role | Name | Email | Password |
+| --- | --- | --- | --- |
+| Seller | `Tanvir Hasan` | `tanvir.hasan@marketplace.live` | `password123` |
+| Seller | `Mariam Chowdhury` | `mariam.chowdhury@marketplace.live` | `password123` |
+
+### Buyers
+
+| Role | Name | Email | Password |
+| --- | --- | --- | --- |
+| Buyer | `Farhan Kabir` | `farhan.kabir@marketplace.live` | `password123` |
+| Buyer | `Sadia Noor` | `sadia.noor@marketplace.live` | `password123` |
+
+These accounts are intended for demo and testing use only.
 
 ## Table of Contents
 
@@ -86,202 +107,122 @@ If you want to log in to the deployed admin account, use the email above. The pa
 
 The application follows a layered Spring Boot architecture. Users interact with Thymeleaf pages and REST endpoints. Controllers delegate to services, services coordinate business logic and validation, repositories persist data through Spring Data JPA, and PostgreSQL stores the application data.
 
-```mermaid
-flowchart LR
-    U[User<br/>Admin / Seller / Buyer]
-    B[Browser]
+```text
+Users (Admin / Seller / Buyer)
+            |
+            v
+Browser / HTTP Client
+            |
+            v
++--------------------------------------------------------------+
+| Presentation Layer                                           |
+|--------------------------------------------------------------|
+| Web Controllers:                                             |
+| - HomePageController                                         |
+| - WebAuthController                                          |
+| - BuyerPageController                                        |
+| - SellerPageController                                       |
+| - AdminPageController                                        |
+|                                                              |
+| REST Controllers:                                            |
+| - AuthController                                             |
+| - ProductController                                          |
+| - OrderController                                            |
+| - AdminUserController                                        |
+|                                                              |
+| Views / Assets:                                              |
+| - Thymeleaf templates                                        |
+| - Static CSS                                                 |
++--------------------------------------------------------------+
+            |
+            v
++--------------------------------------------------------------+
+| Security Layer                                               |
+|--------------------------------------------------------------|
+| - SecurityConfig                                             |
+| - CustomUserDetailsService                                   |
+| - BCrypt Password Encoder                                    |
+| - Role-based URL authorization                               |
++--------------------------------------------------------------+
+            |
+            v
++--------------------------------------------------------------+
+| Service Layer                                                |
+|--------------------------------------------------------------|
+| - RegistrationServiceImpl                                    |
+| - ProductServiceImpl                                         |
+| - OrderServiceImpl                                           |
+| - UserServiceImpl                                            |
+| - RoleDataInitializer                                        |
++--------------------------------------------------------------+
+            |
+            v
++--------------------------------------------------------------+
+| Repository Layer                                             |
+|--------------------------------------------------------------|
+| - UserRepository                                             |
+| - RoleRepository                                             |
+| - ProductRepository                                          |
+| - OrderRepository                                            |
+| - OrderItemRepository                                        |
++--------------------------------------------------------------+
+            |
+            v
++--------------------------------------------------------------+
+| Domain / Support Layer                                       |
+|--------------------------------------------------------------|
+| Entities: User, Role, Product, Order, OrderItem              |
+| DTOs: auth, product, order, user                             |
+| Exception Handling: GlobalExceptionHandler                   |
++--------------------------------------------------------------+
+            |
+            v
++--------------------------------------------------------------+
+| Database                                                     |
+|--------------------------------------------------------------|
+| PostgreSQL                                                   |
++--------------------------------------------------------------+
 
-    subgraph Presentation["Presentation Layer"]
-        H[HomePageController]
-        WA[WebAuthController]
-        BP[BuyerPageController]
-        SP[SellerPageController]
-        AP[AdminPageController]
-
-        AC[AuthController<br/>REST]
-        PC[ProductController<br/>REST]
-        OC[OrderController<br/>REST]
-        AUC[AdminUserController<br/>REST]
-
-        T[Thymeleaf Templates]
-        CSS[Static CSS]
-    end
-
-    subgraph Security["Security Layer"]
-        SC[SecurityConfig]
-        CUDS[CustomUserDetailsService]
-        BCRYPT[BCrypt Password Encoder]
-    end
-
-    subgraph Business["Service Layer"]
-        RS[RegistrationServiceImpl]
-        PS[ProductServiceImpl]
-        OS[OrderServiceImpl]
-        US[UserServiceImpl]
-        RDI[RoleDataInitializer]
-    end
-
-    subgraph Data["Persistence Layer"]
-        UR[UserRepository]
-        RR[RoleRepository]
-        PR[ProductRepository]
-        OR[OrderRepository]
-        OIR[OrderItemRepository]
-    end
-
-    subgraph Domain["Domain Model"]
-        USER[User]
-        ROLE[Role]
-        PRODUCT[Product]
-        ORDER[Order]
-        ORDERITEM[OrderItem]
-        DTO[DTOs]
-        EX[GlobalExceptionHandler]
-    end
-
-    subgraph Database["Database"]
-        DB[(PostgreSQL)]
-    end
-
-    subgraph Infra["Infrastructure"]
-        DF[Dockerfile]
-        DC[docker-compose.yml]
-        GHA[GitHub Actions]
-    end
-
-    U --> B
-    B --> H
-    B --> WA
-    B --> BP
-    B --> SP
-    B --> AP
-    B --> AC
-    B --> PC
-    B --> OC
-    B --> AUC
-
-    H --> T
-    WA --> T
-    BP --> T
-    SP --> T
-    AP --> T
-    T --> CSS
-
-    B --> SC
-    SC --> CUDS
-    SC --> BCRYPT
-    CUDS --> UR
-
-    WA --> RS
-    AC --> RS
-    BP --> PS
-    BP --> OS
-    SP --> PS
-    SP --> OS
-    AP --> US
-    AP --> PS
-    AP --> OS
-    PC --> PS
-    OC --> OS
-    AUC --> US
-
-    RS --> RR
-    RS --> UR
-    PS --> PR
-    PS --> UR
-    OS --> OR
-    OS --> OIR
-    OS --> PR
-    OS --> UR
-    US --> UR
-    RDI --> RR
-
-    UR --> USER
-    RR --> ROLE
-    PR --> PRODUCT
-    OR --> ORDER
-    OIR --> ORDERITEM
-
-    RS --> DTO
-    PS --> DTO
-    OS --> DTO
-    US --> DTO
-
-    AC --> EX
-    PC --> EX
-    OC --> EX
-    AUC --> EX
-    WA --> EX
-    BP --> EX
-    SP --> EX
-    AP --> EX
-
-    UR --> DB
-    RR --> DB
-    PR --> DB
-    OR --> DB
-    OIR --> DB
-
-    DF --> DC
-    DC --> DB
-    GHA --> DF
+Infrastructure / DevOps
+- Dockerfile
+- docker-compose.yml
+- GitHub Actions CI workflow
 ```
 
 ## ER Diagram
 
 The project uses the following main tables: `users`, `roles`, `user_roles`, `products`, `orders`, and `order_items`.
 
-```mermaid
-erDiagram
-    USER {
-        bigint id PK
-        string name
-        string email
-        string password
-        boolean enabled
-    }
-
-    ROLE {
-        bigint id PK
-        string name
-    }
-
-    USER_ROLE {
-        bigint user_id FK
-        bigint role_id FK
-    }
-
-    PRODUCT {
-        bigint id PK
-        string name
-        string description
-        float price
-        int stock
-        bigint seller_id FK
-    }
-
-    ORDER {
-        bigint id PK
-        bigint buyer_id FK
-        datetime created_at
-        string status
-        string payment_method
-    }
-
-    ORDER_ITEM {
-        bigint id PK
-        bigint order_id FK
-        bigint product_id FK
-        int quantity
-        float price
-    }
-
-    USER ||--o{ PRODUCT : sells
-    USER ||--o{ ORDER : places
-    ORDER ||--o{ ORDER_ITEM : contains
-    PRODUCT ||--o{ ORDER_ITEM : included_in
-    USER ||--o{ USER_ROLE : has
-    ROLE ||--o{ USER_ROLE : assigned_to
+```text
++------------------+        +------------------+        +------------------+
+| users            |        | user_roles       |        | roles            |
+|------------------|        |------------------|        |------------------|
+| id (PK)          |<----+  | user_id (FK)     |  +---->| id (PK)          |
+| name             |     |  | role_id (FK)     |  |     | name             |
+| email            |     |  +------------------+  |     +------------------+
+| password         |     |                        |
+| enabled          |     +------ many-to-many ----+
++------------------+
+         |
+         | one-to-many (buyer)
+         v
++------------------+        +------------------+        +------------------+
+| orders           |<-------| order_items      |------->| products         |
+|------------------|        |------------------|        |------------------|
+| id (PK)          |        | id (PK)          |        | id (PK)          |
+| buyer_id (FK)    |        | order_id (FK)    |        | name             |
+| created_at       |        | product_id (FK)  |        | description      |
+| status           |        | quantity         |        | price            |
+| payment_method   |        | price            |        | stock            |
++------------------+        +------------------+        | seller_id (FK)   |
+                                                        +------------------+
+                                                                 ^
+                                                                 |
+                                                                 | one-to-many (seller)
+                                                                 |
+                                                            +----+----+
+                                                            | users    |
+                                                            +---------+
 ```
 
 ### Relationship Summary
@@ -469,7 +410,14 @@ The application expects the following environment variables:
 - `POSTGRES_USER`
 - `POSTGRES_PASSWORD`
 
-### Option 1: Run with Docker Compose
+### Running Options
+
+Use Docker first if you want the easiest and most reproducible setup.
+
+1. Docker Compose (recommended)
+2. Local Spring Boot run
+
+### Option 1: Run with Docker Compose (Recommended)
 
 PowerShell:
 
@@ -524,7 +472,7 @@ $env:PORT="8080"
 - Public registration supports `ROLE_BUYER` and `ROLE_SELLER`.
 - Public registration does not create admin users.
 - To use admin screens, an admin user must already exist in the database and be associated with `ROLE_ADMIN`.
-- The deployed version includes a built-in admin user with email `admin@marketplace.live`.
+- The deployed version includes seeded demo accounts for admin, seller, and buyer access.
 
 ## Running Tests
 
